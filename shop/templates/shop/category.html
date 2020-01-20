@@ -1,0 +1,53 @@
+{% extends "shop/base.html" %}
+
+{% load modulo from shop %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col accordion" id="choices-accordian">
+                    {% for attribute, config in choices.items %}
+                    <div class="card">
+                        <div class="card-header" id="header-{{ attribute }}">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ attribute }}" aria-expanded="true" aria-controls="collapse-{{ attribute }}">
+                                {{ attribute }}
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse-{{ attribute }}" class="collapse show" aria-labelledby="header-{{ attribute }}" data-parent="#choices-accordian">
+                            <div class="card-body">
+                                {% for href, choice in config.choices %}
+                                <a href="{{ href }}" disabled="{% if choice == config.default %}disabled{% endif %}">+ {{ choice }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            {% for obj in page %}
+            {% if forloop.index|modulo:3 == 0 %}
+            <div class="row">
+            {% endif %}
+            <div class="col-sm-12 col-md-4">
+                <a class="card" href="{{ obj.get_absolute_url }}">
+                    <img src="{{ obj.productimage_set.all.0.image.url }}" class="card-img-top" alt="{{ obj }}">
+                    <div class="card-body">
+                        <p class="card-title small text-sm-center">{{ obj }}</p>
+                        {% comment %} <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> {% endcomment %}
+                    </div>
+                </a>
+            </div>
+            {% if forloop.index|modulo:4 == 0 %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

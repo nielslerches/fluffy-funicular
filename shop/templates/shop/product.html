@@ -1,0 +1,54 @@
+{% extends "shop/base.html" %}
+
+{% block title %}{{ obj.name }} · {{ block.super }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            {% for productimage in obj.productimage_set.all %}
+            <a href="#" data-target="#image-{{ productimage.pk }}" class="main-image-option">
+                <img src="{{ productimage.image.url }}" id="image-{{ productimage.pk }}" alt="{{ obj }}" class="mb-3 img-thumbnail rounded">
+            </a>
+            {% endfor %}
+        </div>
+        <div class="col">
+            <img src="{{ obj.productimage_set.all.0.image.url }}" id="main-image" class="img-thumbnail rounded" alt="{{ obj }}">
+        </div>
+        <div class="col-md-5">
+            <h5>{{ obj }}</h5>
+            <br />
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group row justify-content-center">
+                    <div class="col-sm-8">
+                        {{ form.article }}
+                    </div>
+                </div>
+                <div class="form-group row justify-content-center">
+                    <div class="col-sm-6 col-md-4">
+                        {{ form.quantity }}
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                        <button class="btn btn-primary w-100">Add to Cart</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        for (let mainImageOption of Array.from(document.querySelectorAll('.main-image-option'))) {
+            mainImageOption.addEventListener('click', (e) => {
+                const mainImage = document.querySelector('#main-image');
+                mainImage.src = e.target.src;
+            });
+        }
+    });
+</script>
+{% endblock %}

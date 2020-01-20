@@ -1,0 +1,68 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Cart · {{ block.super }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Article</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Line Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.items %}
+                <tr>
+                    <td style="vertical-align: middle;">
+                        <small>{% if item.unavailable %}UNAVAILABLE{% endif %}</small>
+                        <br />
+                        <form action="./remove/" method="POST">
+                            <input type="hidden" value="{{ item.article.pk }}" style="display: none;" />
+                            <button class="btn btn-secondary">
+                                &times;
+                            </button>
+                        </form>
+                    </td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;">
+                        <img src="{{ item.article.product.productimage_set.all.0.image.url }}" class="img-thumbnail" width="128px" height="128px" />
+                    </td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;">{{ item.unit_price }}</td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;">{{ item.quantity }}</td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;">{{ item.line_total }}</td style="vertical-align: middle;">
+                </tr>
+                {% endfor %}
+                <tr class="bg-transparent">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <th scope="row">Total</th>
+                </tr>
+                <tr class="bg-transparent">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;">{{ cart.total }}</td style="vertical-align: middle;">
+                </tr>
+                <tr class="bg-transparent">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;"></td style="vertical-align: middle;">
+                    <td style="vertical-align: middle;">
+                        <form action="/checkout/" method="GET">
+                            <button href="/checkout/" class="btn btn-primary w-100" {% if not cart.can_continue_to_checkout %}disabled="disabled" title="You can't continue to checkout because one or more of the items in your cart is unavailable."{% endif %}>Continue to Checkout</button>
+                        </form>
+                    </td style="vertical-align: middle;">
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
